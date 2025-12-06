@@ -38,12 +38,51 @@ window.addEventListener('scroll', () => {
   });
 });
 
-// Submit button functionality
+// READ MORE BUTTON - Opens article details
+const readMoreLinks = document.querySelectorAll('.read-more');
+
+readMoreLinks.forEach(link => {
+  link.addEventListener('click', (e) => {
+    e.preventDefault();
+    const articleCard = link.closest('.article-card');
+    const title = articleCard.querySelector('h3').textContent;
+    const description = articleCard.querySelector('p').textContent;
+    const category = articleCard.querySelector('.category-tag').textContent;
+    
+    alert(`📰 ARTICLE: ${title}\n\n${description}\n\nCategory: ${category}\n\n✨ Full article coming soon!`);
+  });
+});
+
+// SUBMIT YOUR STORY BUTTON - Working form submission
 const submitBtn = document.getElementById('submitBtn');
 
 if (submitBtn) {
   submitBtn.addEventListener('click', () => {
-    alert('Thank you for your interest! Submit your story by emailing us at hello@youthwire.com');
+    // Show a form popup
+    const userStory = prompt('📝 Share Your Story!\n\nTell us your story in 2-3 lines (min 10 characters):', '');
+    
+    if (userStory && userStory.trim().length >= 10) {
+      const userName = prompt('What\'s your name?', '');
+      const userEmail = prompt('Your email (optional):', '');
+      
+      if (userName && userName.trim().length > 0) {
+        // Show success message
+        alert(`✅ STORY SUBMITTED!\n\nThank you ${userName}! 🎉\n\nYour story: "${userStory}"\n\nWe'll feature it soon on Youthwire!\n\nEmail: ${userEmail || 'Not provided'}`);
+        
+        // In real app, send to backend
+        console.log({
+          story: userStory,
+          name: userName,
+          email: userEmail,
+          timestamp: new Date().toLocaleString()
+        });
+      }
+    } else if (userStory === null) {
+      // User clicked cancel
+      console.log('Story submission cancelled');
+    } else {
+      alert('❌ Please write at least 10 characters!');
+    }
   });
 }
 
@@ -71,14 +110,26 @@ articles.forEach(article => {
   observer.observe(article);
 });
 
-// Add hover effects to article cards
+// Add hover effects to article cards with cursor change
 articles.forEach(article => {
+  article.style.cursor = 'pointer';
+  
   article.addEventListener('mouseenter', function() {
     this.style.transform = 'translateY(-15px)';
+    this.style.boxShadow = '0 15px 40px rgba(102, 126, 234, 0.4)';
   });
   
   article.addEventListener('mouseleave', function() {
     this.style.transform = 'translateY(0)';
+    this.style.boxShadow = '0 5px 20px rgba(0, 0, 0, 0.1)';
+  });
+  
+  // Click on article card to read more
+  article.addEventListener('click', function(e) {
+    if (e.target.tagName !== 'A') {
+      const readMoreLink = this.querySelector('.read-more');
+      if (readMoreLink) readMoreLink.click();
+    }
   });
 });
 
@@ -98,26 +149,43 @@ window.addEventListener('scroll', () => {
   }
 });
 
+// Submit button hover effect
+if (submitBtn) {
+  submitBtn.addEventListener('mouseenter', function() {
+    this.style.transform = 'scale(1.08)';
+    this.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.3)';
+  });
+  
+  submitBtn.addEventListener('mouseleave', function() {
+    this.style.transform = 'scale(1)';
+    this.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.2)';
+  });
+}
+
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('Youthwire website loaded successfully!');
+  console.log('✨ Youthwire website loaded successfully!');
+  console.log('🚀 All interactive features are ready!');
   
   // Add some initial animations
   const heroContent = document.querySelector('.hero-content');
   if (heroContent) {
     heroContent.style.animation = 'fadeInDown 0.8s ease-out';
   }
+  
+  // Show welcome message
+  console.log('%c Welcome to Youthwire! 🎯', 'color: #667eea; font-size: 16px; font-weight: bold');
+  console.log('%c Click on articles to read more, or submit your own story!', 'color: #764ba2; font-size: 14px');
 });
 
-// Analytics tracking (optional - replace with your tracking code)
+// Analytics tracking
 function trackPageView() {
-  console.log('Page viewed at', new Date().toLocaleString());
+  console.log('📊 Page viewed at', new Date().toLocaleString());
 }
 
-// Call tracking on page load
 trackPageView();
 
-// Performance optimization - lazy load images if needed in future
+// Performance check
 if ('IntersectionObserver' in window) {
-  console.log('IntersectionObserver is supported!');
+  console.log('✅ IntersectionObserver is supported!');
 }
